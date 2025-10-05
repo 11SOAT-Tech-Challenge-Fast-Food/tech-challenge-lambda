@@ -56,7 +56,7 @@ Isso criará:
 ---
 ## Sobre as Lambdas
 
-### `registerUser`
+### `/user/register`
 
 Fluxo:
 
@@ -72,7 +72,7 @@ Fluxo:
 #### Exemplo de requisição:
 
 ```bash
-POST /register
+POST /user/register
 Content-Type: application/json
 
 {
@@ -100,7 +100,7 @@ Content-Type: application/json
 
 ---
 
-### `userAuth`
+### `/user/auth`
 
 Fluxo:
 
@@ -120,7 +120,7 @@ Fluxo:
 #### Exemplo:
 
 ```bash
-POST /auth
+POST /user/auth
 Content-Type: application/json
 
 { "cpf": "11076333911" }
