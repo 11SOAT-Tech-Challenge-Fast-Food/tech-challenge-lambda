@@ -72,14 +72,14 @@ Fluxo:
 #### Exemplo de requisição:
 
 ```bash
-POST /user/register
-Content-Type: application/json
+curl --location 'https://aws.execute-api.us-east-1.amazonaws.com/user/register' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "cpf": "11076333911",
+    "email": "verd123@test.com",
+    "name": "verds"
+}'
 
-{
-  "cpf": "11076333911",
-  "email": "user@test.com",
-  "name": "Usuário Teste"
-}
 ```
 
 #### Resposta:
@@ -120,10 +120,11 @@ Fluxo:
 #### Exemplo:
 
 ```bash
-POST /user/auth
-Content-Type: application/json
-
-{ "cpf": "11076333911" }
+curl --location 'https://aws.execute-api.us-east-1.amazonaws.com/user/auth' \
+--header 'Content-Type: application/json' \
+--data '{
+    "cpf": "11076333911"
+}'
 ```
 
 #### Resposta:
