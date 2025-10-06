@@ -42,8 +42,8 @@ resource "aws_lambda_function" "register_user" {
 }
 
 resource "aws_api_gateway_rest_api" "main" {
-  name        = "${var.name_prefix}-api"
-  description = "API for Cognito Auth + Register"
+  name        = "tech-challenge-api-gateway"
+  description = "API GATEWAY MAIN"
 }
 
 resource "aws_api_gateway_resource" "auth" {
