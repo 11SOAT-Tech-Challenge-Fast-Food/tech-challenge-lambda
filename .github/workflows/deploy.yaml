@@ -29,13 +29,13 @@ jobs:
       # ZIP the userAuth Lambda
       - name: ZIP userAuth Lambda
         run: |
-          cd terraform/lambdas/auth
+          cd terraform/lambda/auth
           zip -r ../../auth.zip .
 
       # ZIP the registerUser Lambda
       - name: ZIP registerUser Lambda
         run: |
-          cd terraform/lambdas/registerUser
+          cd terraform/lambda/registerUser
           zip -r ../../registerUser.zip .
 
       # Install Terraform
