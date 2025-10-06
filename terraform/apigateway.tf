@@ -53,13 +53,21 @@ resource "aws_api_gateway_integration" "register_lambda" {
 resource "aws_api_gateway_deployment" "api_deploy" {
   rest_api_id = aws_api_gateway_rest_api.main.id
 
+  triggers = {
+    redeploy_hash = sha1(jsonencode([
+      aws_api_gateway_integration.auth_lambda.id,
+      aws_api_gateway_integration.register_lambda.id,
+      aws_api_gateway_integration.customer_post_proxy.id
+    ]))
+  }
+
   depends_on = [
     aws_api_gateway_integration.auth_lambda,
-    aws_api_gateway_integration.register_lambda
-    # se já tiver integração do EKS:
-    # aws_api_gateway_integration.eks_proxy
+    aws_api_gateway_integration.register_lambda,
+    aws_api_gateway_integration.customer_post_proxy
   ]
 }
+
 
 resource "aws_api_gateway_stage" "user" {
   rest_api_id   = aws_api_gateway_rest_api.main.id
