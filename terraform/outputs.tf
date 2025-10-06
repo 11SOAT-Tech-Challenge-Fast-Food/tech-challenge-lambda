@@ -24,3 +24,14 @@ output "register_endpoint" {
   description = "Endpoint de registro (POST /register)"
   value       = "https://${aws_api_gateway_rest_api.main.id}.execute-api.${var.region}.amazonaws.com/${aws_api_gateway_stage.user.stage_name}/register"
 }
+
+# === Cognito Outputs ===
+output "cognito_user_pool_id" {
+  description = "ID do Cognito User Pool"
+  value       = aws_cognito_user_pool.users.id
+}
+
+output "cognito_client_id" {
+  description = "ID do Cognito App Client"
+  value       = aws_cognito_user_pool_client.app.id
+}

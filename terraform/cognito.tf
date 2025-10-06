@@ -32,17 +32,20 @@ resource "aws_cognito_user_pool_client" "app" {
   generate_secret = false
 
   explicit_auth_flows = [
+    "ALLOW_ADMIN_USER_PASSWORD_AUTH",
     "ALLOW_USER_PASSWORD_AUTH",
     "ALLOW_REFRESH_TOKEN_AUTH",
-    "ALLOW_USER_SRP_AUTH"
+    "ALLOW_USER_SRP_AUTH",
   ]
+
+  prevent_user_existence_errors = "ENABLED"
 }
 
 # ---------- Cognito Authorizer ----------
 resource "aws_api_gateway_authorizer" "jwt_authorizer" {
-  name                   = "cognito-authorizer"
-  rest_api_id            = aws_api_gateway_rest_api.main.id
-  type                   = "COGNITO_USER_POOLS"
-  provider_arns          = [aws_cognito_user_pool.users.arn]
-  identity_source         = "method.request.header.Authorization"
+  name            = "cognito-authorizer"
+  rest_api_id     = aws_api_gateway_rest_api.main.id
+  type            = "COGNITO_USER_POOLS"
+  provider_arns   = [aws_cognito_user_pool.users.arn]
+  identity_source = "method.request.header.Authorization"
 }

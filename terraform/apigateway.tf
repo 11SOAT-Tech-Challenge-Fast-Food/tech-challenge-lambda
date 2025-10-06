@@ -55,16 +55,22 @@ resource "aws_api_gateway_deployment" "api_deploy" {
 
   triggers = {
     redeploy_hash = sha1(jsonencode([
-      aws_api_gateway_integration.auth_lambda.id,
-      aws_api_gateway_integration.register_lambda.id,
-      aws_api_gateway_integration.customer_post_proxy.id
+      aws_api_gateway_integration.auth_lambda.uri,
+      aws_api_gateway_integration.register_lambda.uri,
+      aws_api_gateway_integration.customer_post_proxy.uri,
+      aws_api_gateway_authorizer.jwt_authorizer.id,
     ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   depends_on = [
     aws_api_gateway_integration.auth_lambda,
     aws_api_gateway_integration.register_lambda,
-    aws_api_gateway_integration.customer_post_proxy
+    aws_api_gateway_integration.customer_post_proxy,
+    aws_api_gateway_authorizer.jwt_authorizer,
   ]
 }
 

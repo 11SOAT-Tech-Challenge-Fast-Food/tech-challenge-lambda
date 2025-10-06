@@ -3,12 +3,15 @@ const {
   ListUsersCommand,
   AdminCreateUserCommand,
   AdminUpdateUserAttributesCommand,
+  AdminSetUserPasswordCommand,
 } = require("@aws-sdk/client-cognito-identity-provider");
 const { Client } = require("pg");
 const { randomUUID } = require("crypto");
 
+// ==== Configurações ====
 const region = process.env.AWS_REGION || "us-east-1";
 const USER_POOL_ID = process.env.USER_POOL_ID;
+const DEFAULT_PASSWORD = process.env.DEFAULT_PASSWORD || "SENHABOa12345#";
 
 const DB_CONFIG = {
   host: process.env.DB_HOST,
@@ -21,20 +24,20 @@ const DB_CONFIG = {
 
 const cognito = new CognitoIdentityProviderClient({ region });
 
+// ==== Utilitários ====
 function sanitizeCpf(input) {
   if (!input) throw new Error("CPF ausente.");
   const digits = String(input).replace(/\D/g, "");
   if (digits.length !== 11) {
-    throw new Error(
-      `CPF inválido: deve conter exatamente 11 dígitos (recebido ${digits.length}).`
-    );
+    throw new Error(`CPF inválido: deve conter exatamente 11 dígitos (recebido ${digits.length}).`);
   }
   return digits;
 }
 
+// ==== Handler principal ====
 exports.handler = async (event) => {
   console.log("==== INÍCIO REQUEST ====");
-  console.log("Event recebido:", JSON.stringify(event, null, 2));
+  console.log("Evento recebido:", JSON.stringify(event, null, 2));
 
   let dbClient;
   const responseLog = { steps: [] };
@@ -47,9 +50,7 @@ exports.handler = async (event) => {
     if (!cpf && !email) {
       return {
         statusCode: 400,
-        body: JSON.stringify({
-          message: "Informe ao menos CPF ou e-mail.",
-        }),
+        body: JSON.stringify({ message: "Informe ao menos CPF ou e-mail." }),
       };
     }
 
@@ -62,6 +63,7 @@ exports.handler = async (event) => {
           Filter: `email = "${email}"`,
           Limit: 1,
         });
+
         const listResp = await cognito.send(listCmd);
 
         if (listResp.Users && listResp.Users.length > 0) {
@@ -80,12 +82,13 @@ exports.handler = async (event) => {
       }
     }
 
-    // === Criação no Cognito ===
+    // === Criação do usuário no Cognito ===
     try {
       responseLog.steps.push("Criando usuário no Cognito");
+
       const createCmd = new AdminCreateUserCommand({
         UserPoolId: USER_POOL_ID,
-        Username: cpf, // CPF é o identificador único
+        Username: cpf,
         UserAttributes: [
           ...(email ? [{ Name: "email", Value: email }] : []),
           ...(name ? [{ Name: "name", Value: name }] : []),
@@ -96,6 +99,18 @@ exports.handler = async (event) => {
       await cognito.send(createCmd);
       console.log("Usuário criado com sucesso no Cognito:", cpf);
 
+      // === Define senha padrão permanente ===
+      const setPassCmd = new AdminSetUserPasswordCommand({
+        UserPoolId: USER_POOL_ID,
+        Username: cpf,
+        Password: DEFAULT_PASSWORD,
+        Permanent: true,
+      });
+
+      await cognito.send(setPassCmd);
+      console.log(`Senha padrão definida para o usuário ${cpf}`);
+
+      // === Marca e-mail como verificado ===
       if (email) {
         responseLog.steps.push("Marcando e-mail como verificado");
         const updateCmd = new AdminUpdateUserAttributesCommand({
@@ -120,7 +135,7 @@ exports.handler = async (event) => {
       throw err;
     }
 
-    // === Conexão com o Banco ===
+    // === Conexão com o banco ===
     try {
       responseLog.steps.push("Conectando ao banco");
       dbClient = new Client(DB_CONFIG);
@@ -134,12 +149,14 @@ exports.handler = async (event) => {
     // === Inserção no RDS ===
     try {
       responseLog.steps.push("Inserindo cliente no banco");
+
       const id = randomUUID();
       const insertQuery = `
         INSERT INTO customer (id, name, email, cpf, created_at, updated_at)
         VALUES ($1, $2, $3, $4, NOW(), NOW())
         RETURNING id;
       `;
+
       console.log("Executando query SQL:", insertQuery);
       console.log("Parâmetros:", [id, name, email, cpf]);
 
@@ -150,18 +167,16 @@ exports.handler = async (event) => {
         cpf || null,
       ]);
 
-      if (!result.rows?.length) {
-        console.warn("Nenhuma linha retornada do INSERT!");
-      } else {
-        console.log("Cliente inserido com sucesso, ID:", result.rows[0].id);
-      }
+      const dbId = result.rows?.[0]?.id || null;
+
+      console.log("Cliente inserido com sucesso, ID:", dbId);
 
       return {
         statusCode: 201,
         body: JSON.stringify({
           message: "Usuário registrado com sucesso!",
           cpf,
-          db_customer_id: result.rows[0]?.id || null,
+          db_customer_id: dbId,
           audit: responseLog.steps,
         }),
       };
