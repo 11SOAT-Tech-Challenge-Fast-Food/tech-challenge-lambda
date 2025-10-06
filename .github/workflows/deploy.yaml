@@ -26,6 +26,9 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
       
+      # ZIP the lambda function
+      - name: ZIP the lambda function
+        run: zip -r -X ../terraform/auth.zip index.js package.json node_modules/
       # ZIP the userAuth Lambda
       - name: ZIP userAuth Lambda
         run: |
