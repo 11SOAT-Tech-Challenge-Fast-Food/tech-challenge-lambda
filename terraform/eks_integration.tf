@@ -47,6 +47,6 @@ resource "aws_api_gateway_integration" "customer_post_proxy" {
   http_method             = aws_api_gateway_method.customer_post.http_method
   integration_http_method = "POST"
   type                    = "HTTP_PROXY"
-  uri                     = "http://test/customer"
+  uri                     = "https://google.com"
 }
 
