@@ -45,6 +45,13 @@ jobs:
         working-directory: ./terraform
         run: terraform init
 
+      # Importar Lambdas existentes (sem falhar se não existirem)
+      - name: Terraform Import Lambdas
+        working-directory: ./terraform
+        run: |
+          terraform import aws_lambda_function.auth techchallenge-auth-lambda || echo "Auth Lambda ainda não existe, será criada."
+          terraform import aws_lambda_function.register_user techchallenge-register-user-lambda || echo "RegisterUser Lambda ainda não existe, será criada."
+
       # Validar a configuração Terraform
       - name: Terraform Validate
         working-directory: ./terraform
