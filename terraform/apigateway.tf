@@ -55,9 +55,10 @@ resource "aws_api_gateway_deployment" "api_deploy" {
 
   triggers = {
     redeploy_hash = sha1(jsonencode([
-      aws_api_gateway_integration.auth_lambda.uri,
-      aws_api_gateway_integration.register_lambda.uri,
-      aws_api_gateway_integration.customer_post_proxy.uri,
+      aws_api_gateway_rest_api.main.id,
+      aws_api_gateway_resource.customer.id,
+      aws_api_gateway_method.customer_post.id,
+      aws_api_gateway_integration.customer_post_proxy.id,
       aws_api_gateway_authorizer.jwt_authorizer.id,
     ]))
   }

@@ -8,18 +8,18 @@ resource "aws_lambda_function" "auth" {
 
   environment {
     variables = {
-      USER_POOL_ID = var.existing_user_pool_id != "" ? var.existing_user_pool_id : aws_cognito_user_pool.users.id
-      USER_POOL_CLIENT_ID = aws_cognito_user_pool_client.app.id
-      JWT_ISSUER   = var.jwt_issuer
-      JWT_TTL_MIN  = tostring(var.jwt_ttl_min)
-      JWT_SECRET   = var.jwt_secret
-      DB_HOST      = "ordermanagementdb-postgres.c7s8uwq2c3v1.us-east-1.rds.amazonaws.com"
-      DB_PORT      = "5432"
-      DB_NAME      = "ordermanagementdb"
-      DB_USER      = "db_user"
-      DB_PASSWORD  = "db_password"
-      CLIENT_ID        = aws_cognito_user_pool_client.app.id
-      DEFAULT_PASSWORD = "SENHABOa12345#"
+      USER_POOL_ID         = aws_cognito_user_pool.users.id
+      USER_POOL_CLIENT_ID  = aws_cognito_user_pool_client.app.id
+      JWT_ISSUER           = "https://cognito-idp.${var.region}.amazonaws.com/${aws_cognito_user_pool.users.id}"
+      JWT_TTL_MIN          = tostring(var.jwt_ttl_min)
+      JWT_SECRET           = var.jwt_secret
+      DB_HOST              = "ordermanagementdb-postgres.c7s8uwq2c3v1.us-east-1.rds.amazonaws.com"
+      DB_PORT              = "5432"
+      DB_NAME              = "ordermanagementdb"
+      DB_USER              = "db_user"
+      DB_PASSWORD          = "db_password"
+      CLIENT_ID            = aws_cognito_user_pool_client.app.id
+      DEFAULT_PASSWORD     = "SENHABOa12345#"
     }
   }
 }
@@ -34,19 +34,19 @@ resource "aws_lambda_function" "register_user" {
 
   environment {
     variables = {
-      USER_POOL_CLIENT_ID = aws_cognito_user_pool_client.app.id
-      USER_POOL_ID = var.existing_user_pool_id != "" ? var.existing_user_pool_id : aws_cognito_user_pool.users.id
-      DB_HOST      = "ordermanagementdb-postgres.c7s8uwq2c3v1.us-east-1.rds.amazonaws.com"
-      DB_PORT      = "5432"
-      DB_NAME      = "ordermanagementdb"
-      DB_USER      = "db_user"
-      DB_PASSWORD  = "db_password"
-      DEFAULT_PASSWORD = "SENHABOa12345#"
+      USER_POOL_ID         = aws_cognito_user_pool.users.id
+      USER_POOL_CLIENT_ID  = aws_cognito_user_pool_client.app.id
+      DB_HOST              = "ordermanagementdb-postgres.c7s8uwq2c3v1.us-east-1.rds.amazonaws.com"
+      DB_PORT              = "5432"
+      DB_NAME              = "ordermanagementdb"
+      DB_USER              = "db_user"
+      DB_PASSWORD          = "db_password"
+      DEFAULT_PASSWORD     = "SENHABOa12345#"
     }
   }
 }
 
-# ---------- Auth Lambda permission ----------
+# ---------- Lambda Permissions ----------
 resource "aws_lambda_permission" "api_gw_auth" {
   statement_id  = "AllowAPIGatewayInvokeAuth"
   action        = "lambda:InvokeFunction"
@@ -55,7 +55,6 @@ resource "aws_lambda_permission" "api_gw_auth" {
   source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
 }
 
-# ---------- Register Lambda permission ----------
 resource "aws_lambda_permission" "api_gw_register_user" {
   statement_id  = "AllowAPIGatewayInvokeRegisterUser"
   action        = "lambda:InvokeFunction"

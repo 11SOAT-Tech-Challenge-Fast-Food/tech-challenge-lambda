@@ -22,9 +22,3 @@ variable "jwt_secret" {
   type    = string
   default = "senhaboa123"
 }
-
-variable "existing_user_pool_id" {
-  description = "ID de um user pool já existente (deixe em branco para criar um novo)"
-  type        = string
-  default     = ""
-}

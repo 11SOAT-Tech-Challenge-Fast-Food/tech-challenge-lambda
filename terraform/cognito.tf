@@ -1,5 +1,6 @@
+# ---------- Cognito User Pool ----------
 resource "aws_cognito_user_pool" "users" {
-  name = "${var.name_prefix}-cpf-user-pool"
+  name = "${var.name_prefix}-user-pool"
 
   auto_verified_attributes = ["email"]
 
@@ -14,10 +15,10 @@ resource "aws_cognito_user_pool" "users" {
   alias_attributes = ["email"]
 
   schema {
-    name                = "email"
-    attribute_data_type = "String"
-    required            = false
-    mutable             = true
+    name                     = "email"
+    attribute_data_type      = "String"
+    required                 = false
+    mutable                  = true
     developer_only_attribute = false
     string_attribute_constraints {
       min_length = 5
@@ -26,8 +27,9 @@ resource "aws_cognito_user_pool" "users" {
   }
 }
 
+# ---------- Cognito App Client ----------
 resource "aws_cognito_user_pool_client" "app" {
-  name            = "${var.name_prefix}-cpf-app-client"
+  name            = "${var.name_prefix}-app-client"
   user_pool_id    = aws_cognito_user_pool.users.id
   generate_secret = false
 
