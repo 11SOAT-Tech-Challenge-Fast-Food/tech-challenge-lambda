@@ -49,6 +49,17 @@ resource "aws_api_gateway_integration" "register_lambda" {
   uri                     = aws_lambda_function.register_user.invoke_arn
 }
 
+# ---------- Authorizer ----------
+resource "aws_api_gateway_authorizer" "jwt_authorizer" {
+  name                             = "jwt-authorizer"
+  rest_api_id                      = aws_api_gateway_rest_api.main.id
+  authorizer_uri                   = aws_lambda_function.jwt_authorizer.invoke_arn
+  authorizer_result_ttl_in_seconds = 300
+  identity_source                  = "method.request.header.Authorization"
+  type                             = "REQUEST"
+}
+
+
 # ---------- Deployment + Stage ----------
 resource "aws_api_gateway_deployment" "api_deploy" {
   rest_api_id = aws_api_gateway_rest_api.main.id
@@ -56,9 +67,6 @@ resource "aws_api_gateway_deployment" "api_deploy" {
   triggers = {
     redeploy_hash = sha1(jsonencode([
       aws_api_gateway_rest_api.main.id,
-      aws_api_gateway_resource.customer.id,
-      aws_api_gateway_method.customer_post.id,
-      aws_api_gateway_integration.customer_post_proxy.id,
       aws_api_gateway_authorizer.jwt_authorizer.id,
     ]))
   }
@@ -70,7 +78,6 @@ resource "aws_api_gateway_deployment" "api_deploy" {
   depends_on = [
     aws_api_gateway_integration.auth_lambda,
     aws_api_gateway_integration.register_lambda,
-    aws_api_gateway_integration.customer_post_proxy,
     aws_api_gateway_authorizer.jwt_authorizer,
   ]
 }

@@ -42,12 +42,3 @@ resource "aws_cognito_user_pool_client" "app" {
 
   prevent_user_existence_errors = "ENABLED"
 }
-
-# ---------- Cognito Authorizer ----------
-resource "aws_api_gateway_authorizer" "jwt_authorizer" {
-  name            = "cognito-authorizer"
-  rest_api_id     = aws_api_gateway_rest_api.main.id
-  type            = "COGNITO_USER_POOLS"
-  provider_arns   = [aws_cognito_user_pool.users.arn]
-  identity_source = "method.request.header.Authorization"
-}
