@@ -85,7 +85,7 @@ jobs:
         run: |
           terraform plan -out=tfplan \
             -var "api_uri=http://$lb_dns/" \
-            -var "jwt_token=${{ secrets.JWT_TOKEN }}" \
+            -var "jwt_secret=${{ secrets.JWT_TOKEN }}" \
             -var "db_username=${{ secrets.DB_USER }}" \
             -var "db_password=${{ secrets.DB_PASS }}" \
             -var "db_host=$RDS_HOST"
