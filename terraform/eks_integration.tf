@@ -35,6 +35,12 @@ resource "aws_api_gateway_resource" "eks_payment" {
   path_part   = "payment"
 }
 
+resource "aws_api_gateway_resource" "eks_docs" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  parent_id   = aws_api_gateway_resource.eks.id
+  path_part   = "docs"
+}
+
 # --------------------HEALTH-----------------------------
 # -------------------------------------------------
 # /api/health [GET]
@@ -57,28 +63,22 @@ resource "aws_api_gateway_integration" "eks_health_get" {
 # -------------------------------------------------
 # /api/swagger [GET] - Público (sem JWT)
 # -------------------------------------------------
-resource "aws_api_gateway_resource" "eks_swagger" {
-  rest_api_id = aws_api_gateway_rest_api.main.id
-  parent_id   = aws_api_gateway_resource.eks.id
-  path_part   = "swagger"
-}
-
-resource "aws_api_gateway_method" "eks_swagger_get" {
+resource "aws_api_gateway_method" "eks_docs_get" {
   rest_api_id   = aws_api_gateway_rest_api.main.id
-  resource_id   = aws_api_gateway_resource.eks_swagger.id
+  resource_id   = aws_api_gateway_resource.eks_docs.id
   http_method   = "GET"
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_integration" "eks_swagger_get" {
+resource "aws_api_gateway_integration" "eks_docs_get" {
   rest_api_id             = aws_api_gateway_rest_api.main.id
-  resource_id             = aws_api_gateway_resource.eks_swagger.id
-  http_method             = aws_api_gateway_method.eks_swagger_get.http_method
+  resource_id             = aws_api_gateway_resource.eks_docs.id
+  http_method             = aws_api_gateway_method.eks_docs_get.http_method
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
 
-  # 🔗 URL pública do Swagger rodando no backend
-  uri = "http://${var.api_uri}:8080/swagger-ui.html"
+  # 🔗 Swagger público rodando no EKS
+  uri = "${var.api_uri}:8080/swagger-ui.html"
 }
 
 
