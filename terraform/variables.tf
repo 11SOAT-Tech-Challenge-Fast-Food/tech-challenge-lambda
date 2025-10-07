@@ -19,11 +19,11 @@ variable "jwt_ttl_min" {
 }
 
 variable "jwt_secret" {
-  type    = string
+  type = string
 }
 
 variable "api_uri" {
-  type    = string
+  type = string
 }
 
 variable "db_username" {

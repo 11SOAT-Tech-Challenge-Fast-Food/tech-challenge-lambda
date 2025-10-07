@@ -77,7 +77,6 @@ resource "aws_api_gateway_integration" "eks_docs_get" {
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
 
-  # 🔗 Swagger público rodando no EKS
   uri = "http://${var.api_uri}:8080/swagger-ui.html"
 }
 
@@ -105,9 +104,9 @@ resource "aws_api_gateway_integration" "eks_customer_post" {
 # -------------------------------------------------
 # /api/customer [GET] - Protegido com JWT
 resource "aws_api_gateway_method" "eks_customer_get" {
-  rest_api_id = aws_api_gateway_rest_api.main.id
-  resource_id = aws_api_gateway_resource.eks_customer.id
-  http_method = "GET"
+  rest_api_id   = aws_api_gateway_rest_api.main.id
+  resource_id   = aws_api_gateway_resource.eks_customer.id
+  http_method   = "GET"
   authorization = "CUSTOM"
   authorizer_id = aws_api_gateway_authorizer.jwt_authorizer.id
 }
@@ -266,7 +265,7 @@ resource "aws_api_gateway_integration" "eks_customer_id_put" {
   type                    = "HTTP_PROXY"
 
   uri = "http://${var.api_uri}:8080/customer/{id}"
-  
+
 
   request_parameters = {
     "integration.request.path.id" = "method.request.path.id"

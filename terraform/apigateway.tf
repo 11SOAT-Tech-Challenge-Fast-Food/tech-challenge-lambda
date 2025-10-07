@@ -53,7 +53,7 @@ resource "aws_api_gateway_integration" "register_lambda" {
 resource "aws_api_gateway_authorizer" "jwt_authorizer" {
   name                             = "jwt-authorizer"
   rest_api_id                      = aws_api_gateway_rest_api.main.id
-  authorizer_uri = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.jwt_authorizer.arn}/invocations"
+  authorizer_uri                   = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.jwt_authorizer.arn}/invocations"
   authorizer_result_ttl_in_seconds = 300
   identity_source                  = "method.request.header.Authorization"
   type                             = "REQUEST"
@@ -114,7 +114,8 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     aws_api_gateway_integration.eks_order_id_delete,
     aws_api_gateway_integration.eks_payment_post,
     aws_api_gateway_integration.eks_payment_id_get,
-    aws_api_gateway_integration.eks_payment_webhook_post
+    aws_api_gateway_integration.eks_payment_webhook_post,
+    aws_api_gateway_integration.eks_docs_get
   ]
 }
 
