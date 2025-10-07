@@ -78,7 +78,7 @@ resource "aws_api_gateway_integration" "eks_docs_get" {
   type                    = "HTTP_PROXY"
 
   # 🔗 Swagger público rodando no EKS
-  uri = "${var.api_uri}:8080/swagger-ui.html"
+  uri = "http://${var.api_uri}:8080/swagger-ui.html"
 }
 
 
