@@ -20,10 +20,20 @@ variable "jwt_ttl_min" {
 
 variable "jwt_secret" {
   type    = string
-  default = "senhaboa123"
 }
 
 variable "api_uri" {
   type    = string
-  default = "http://a2dbd1911ef6e4ae5885660baa1c673f-469276399.us-east-1.elb.amazonaws.com:8080"
+}
+
+variable "db_username" {
+  type = string
+}
+
+variable "db_password" {
+  type = string
+}
+
+variable "db_host" {
+  type = string
 }

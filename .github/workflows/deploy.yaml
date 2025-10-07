@@ -7,6 +7,7 @@ on:
 
 env:
   AWS_REGION: "us-east-1"
+  EKS_CLUSTER_NAME: eks-cluster-tech-challenge-ordermanagement
 
 jobs:
   deploy:
@@ -25,9 +26,34 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
-      
+
+      - name: Configure kubeconfig for EKS
+        uses: silverlyra/setup-aws-eks@v0.1
+        with:
+          cluster: ${{ env.EKS_CLUSTER_NAME }}
+
+      # Captura o DNS do primeiro Load Balancer
+      - name: Get EKS Load Balancer DNS
+        id: get_lb
+        run: |
+          LB_DNS=$(aws elb describe-load-balancers \
+            --query "LoadBalancerDescriptions[0].DNSName" \
+            --output text \
+            --region ${{ env.AWS_REGION }})
+          echo "LB_DNS=$LB_DNS" >> $GITHUB_ENV
+          echo "DNS do LB: $LB_DNS"
+
+      - name: Get RDS endpoint
+        id: rds
+        run: |
+          RDS_HOST=$(aws rds describe-db-instances \
+            --db-instance-identifier tech-challenge-ordermanagement-postgres \
+            --query "DBInstances[0].[Endpoint.Address]" \
+            --output text)
+          echo "RDS_ENDPOINT=$RDS_HOST" >> $GITHUB_ENV
+
       # ZIP Lambdas
-      - name: ZIP userAuth Lambda
+      - name: ZIP Lambdas
         run: |
           cd terraform/lambda/auth
           zip -r -X ../../auth.zip index.js package.json node_modules/
@@ -40,29 +66,32 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.7
+          terraform_version: 1.12.2
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       # Inicializar Terraform Init
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init
 
-      # Inicializar Terraform Destroy evita conflito do lambda
-      - name: Terraform Destroy
-        working-directory: ./terraform
-        run: terraform destroy
-
-      # Validar a configuração Terraform
+      # Validar Terraform
       - name: Terraform Validate
         working-directory: ./terraform
         run: terraform validate
 
-      # Criar plano
+      # Terraform Plan com variáveis
       - name: Terraform Plan
         working-directory: ./terraform
-        run: terraform plan -out=tfplan
+        run: |
+          terraform plan \
+            -var "api_uri=http://$LB_DNS" \
+            -var "jwt_token=${{ secrets.JWT_TOKEN }}" \
+            -var "db_username=${{ secrets.DB_USER }}" \
+            -var "db_password=${{ secrets.DB_PASS }}" \
+            -var "db_host=$RDS_HOST" \
+            -out=tfplan
 
-      # Aplicar plano automaticamente
+      # Terraform Apply
       - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
