@@ -43,7 +43,7 @@ jobs:
           terraform_version: 1.5.7
 
       # Inicializar Terraform Destroy evita conflito do lambda
-      - name: Terraform Init
+      - name: Terraform Destroy
         working-directory: ./terraform
         run: terraform destroy
 
