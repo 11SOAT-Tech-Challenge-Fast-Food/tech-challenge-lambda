@@ -50,7 +50,7 @@ jobs:
             --db-instance-identifier tech-challenge-ordermanagement-postgres \
             --query "DBInstances[0].[Endpoint.Address]" \
             --output text)
-          echo "RDS_ENDPOINT=$RDS_HOST" >> $GITHUB_ENV
+          echo "RDS_HOST=$RDS_HOST" >> $GITHUB_ENV
 
       # ZIP Lambdas
       - name: ZIP Lambdas
