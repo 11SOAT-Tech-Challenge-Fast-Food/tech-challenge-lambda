@@ -25,5 +25,5 @@ variable "jwt_secret" {
 
 variable "api_uri" {
   type    = string
-  default = "http://a68e11e2bdd0644a09102cf8c8e48e00-1652431674.us-east-1.elb.amazonaws.com:8080"
+  default = "http://a2dbd1911ef6e4ae5885660baa1c673f-469276399.us-east-1.elb.amazonaws.com:8080"
 }
