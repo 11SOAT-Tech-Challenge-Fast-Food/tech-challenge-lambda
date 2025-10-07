@@ -31,6 +31,8 @@ jobs:
         run: |
           cd terraform/lambda/auth
           zip -r -X ../../auth.zip index.js package.json node_modules/
+          cd ../authorizer
+          zip -r -X ../../authorizer.zip index.js package.json node_modules/
           cd ../registerUser
           zip -r -X ../../registerUser.zip index.js package.json node_modules/
 
