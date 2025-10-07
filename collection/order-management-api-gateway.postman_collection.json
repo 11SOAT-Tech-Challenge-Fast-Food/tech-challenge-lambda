@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "63f9d65c-860c-4770-b400-f8ea84c927d0",
+		"_postman_id": "8c466e80-2239-409f-9699-d3cf12ec7243",
 		"name": "order-management-api-gateway",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31136225"
@@ -43,7 +43,90 @@
 								},
 								"description": "Generated from cURL: curl -X POST \"<URL>/auth\" \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"cpf\": \"507625298311\"}'"
 							},
-							"response": []
+							"response": [
+								{
+									"name": "/user/register",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"cpf\": \"51076311820\",\r\n    \"email\": \"51076311820@test.com\",\r\n    \"name\": \"verds\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/user/register",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"user",
+												"register"
+											]
+										}
+									},
+									"status": "Conflict",
+									"code": 409,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "78"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 07 Oct 2025 05:39:17 GMT"
+										},
+										{
+											"key": "X-Amzn-Trace-Id",
+											"value": "Root=1-68e4a783-730bd774028b216729c05786;Parent=67abd75d77d76f95;Sampled=0;Lineage=1:c75b7a32:0"
+										},
+										{
+											"key": "x-amzn-RequestId",
+											"value": "2f8414cd-3bf0-4796-a748-91d82fe9b1b8"
+										},
+										{
+											"key": "x-amz-apigw-id",
+											"value": "SD8coGHcIAMEuUA="
+										},
+										{
+											"key": "X-Cache",
+											"value": "Error from cloudfront"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 649b1f16fecf5d4ed7e4fd923ea81ff0.cloudfront.net (CloudFront)"
+										},
+										{
+											"key": "X-Amz-Cf-Pop",
+											"value": "GRU3-P11"
+										},
+										{
+											"key": "X-Amz-Cf-Id",
+											"value": "uRstFBxZN99bHDWMPYnMX_YsZJW8jkdliS9rUwhVeIYxGoDGWbsCsg=="
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"E-mail já registrado no sistema.\",\n    \"email\": \"51076311820@test.com\"\n}"
+								}
+							]
 						},
 						{
 							"name": "/user/auth",
@@ -93,7 +176,90 @@
 								},
 								"description": "Generated from cURL: curl -X POST \"<URL>/auth\" \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"cpf\": \"507625298311\"}'"
 							},
-							"response": []
+							"response": [
+								{
+									"name": "/user/auth",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"cpf\": \"51076311820\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/user/auth",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"user",
+												"auth"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "1391"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 07 Oct 2025 05:39:24 GMT"
+										},
+										{
+											"key": "X-Amzn-Trace-Id",
+											"value": "Root=1-68e4a78b-0428b964444f7b821daa4478;Parent=23ba21d54ff0293d;Sampled=0;Lineage=1:1363bfe1:0"
+										},
+										{
+											"key": "x-amzn-RequestId",
+											"value": "df795bbf-014c-4827-b9e7-29b610ba1fc2"
+										},
+										{
+											"key": "x-amz-apigw-id",
+											"value": "SD8dyF10oAMEd1w="
+										},
+										{
+											"key": "X-Cache",
+											"value": "Miss from cloudfront"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 649b1f16fecf5d4ed7e4fd923ea81ff0.cloudfront.net (CloudFront)"
+										},
+										{
+											"key": "X-Amz-Cf-Pop",
+											"value": "GRU3-P11"
+										},
+										{
+											"key": "X-Amz-Cf-Id",
+											"value": "p6mzj1X3uBaxM3ZnqOYUDZehLYXv1sskJhZNfF6yDu7kr4LzVn6Kpw=="
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"Autenticação bem-sucedida.\",\n    \"cognito_access_token\": \"eyJraWQiOiJlcVN6NTdPOUdoQ2ZjRlNFWk1KcUprSDBsYmgyUGV2em82NXlUdUZvbjlrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNGQ4YjRjOC0xMDYxLTcwYWUtNGNhNy01YWI0ODE2MTIxOTEiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9DRVp6ZThnSFMiLCJjbGllbnRfaWQiOiJvNWc2MGZ2ZGlxMXJiZTg2Y3IzMXFsb2pwIiwib3JpZ2luX2p0aSI6IjljMGE2YzY5LWQ5M2YtNDg1Yy1hODQ4LTdiYWRhNDAxY2NlYyIsImV2ZW50X2lkIjoiZGM2MDFjYWQtNjU4ZC00M2MzLWJjNGEtNGFmNjE1MTA1ZWEzIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTc1OTgxNTU2NCwiZXhwIjoxNzU5ODE5MTY0LCJpYXQiOjE3NTk4MTU1NjQsImp0aSI6ImU3YWZiNzM2LWY5OTMtNGVmZS05YWRmLWY0M2IyNDAwYTExZSIsInVzZXJuYW1lIjoiNTEwNzYzMTE4MjAifQ.uRi7RbW3MPn9zKML98EVOm0BlTqJ2UwR63c_6D2wVH7DYwBMQ5q-ck-vpodkRwEnL1PYq7yLSGXEmOIAkWLtAv_iTiTOMTgh285n2KH5nMeJ66N6R19C39UJFr3nRRNwAwQrlYn-S56w_EZtjKUUOmQ7Z5gzpKfJHLDAizIwBMcXNhYyLwsYEvbHfLnpbLo9aweNgTo3SEA5nOBcJ_M5hmhsF4jbH4hZT_DC43bK92pPkv5Ct-tsZfPbI0S-3i6L5tjiY_UZDSx4Ab7gMyfgMc5iWSP7mvHG2twMPdj_nWgjBt3XdwC2TBVTRRBqZXZtFMUvOUnwLpVXItruQ-engQ\",\n    \"jwt\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MTA3NjMxMTgyMCIsImNwZiI6IjUxMDc2MzExODIwIiwiaXNzIjoiaHR0cHM6Ly9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbS91cy1lYXN0LTFfQ0VaemU4Z0hTIiwiaWF0IjoxNzU5ODE1NTY0LCJleHAiOjE3NTk4MTY0NjR9.A2INnUzfRpE5h-RkKh9VQ1x6SlMUybcQcbgmYqKHTas\"\n}"
+								}
+							]
 						}
 					]
 				},
@@ -114,8 +280,7 @@
 									}
 								],
 								"url": {
-									"raw": "https://{{baseURL}}/user/api/health",
-									"protocol": "https",
+									"raw": "{{baseURL}}/user/api/health",
 									"host": [
 										"{{baseURL}}"
 									],
@@ -123,6 +288,110 @@
 										"user",
 										"api",
 										"health"
+									]
+								},
+								"description": "Generated from cURL: curl -X POST \"<URL>/auth\" \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"cpf\": \"507625298311\"}'"
+							},
+							"response": [
+								{
+									"name": "/user/api/health",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseURL}}/user/api/health",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"user",
+												"api",
+												"health"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/vnd.spring-boot.actuator.v3+json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "15"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 07 Oct 2025 05:39:30 GMT"
+										},
+										{
+											"key": "x-amzn-Remapped-Date",
+											"value": "Tue, 07 Oct 2025 05:39:30 GMT"
+										},
+										{
+											"key": "x-amzn-RequestId",
+											"value": "9656d10e-89ed-4172-8814-5505eaf1231d"
+										},
+										{
+											"key": "x-amzn-Remapped-Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-amz-apigw-id",
+											"value": "SD8e5EaloAMEITw="
+										},
+										{
+											"key": "X-Cache",
+											"value": "Miss from cloudfront"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 649b1f16fecf5d4ed7e4fd923ea81ff0.cloudfront.net (CloudFront)"
+										},
+										{
+											"key": "X-Amz-Cf-Pop",
+											"value": "GRU3-P11"
+										},
+										{
+											"key": "X-Amz-Cf-Id",
+											"value": "8BQBgc4zHSa0itD-xwKSw6lc3O062Is8FXfAjhKM8TUybxRJrjRu-g=="
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"UP\"\n}"
+								}
+							]
+						},
+						{
+							"name": "/user/api/swagger-ui.html",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseURL}}/user/api/docs",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"docs"
 									]
 								},
 								"description": "Generated from cURL: curl -X POST \"<URL>/auth\" \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"cpf\": \"507625298311\"}'"
@@ -204,7 +473,99 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "createCustomer",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"name\": \"Guilherme Paternezi2\",\n    \"email\": \"guiduduck@gmail.com\",\n    \"cpf\": \"50762529831\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/user/api/customer",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"user",
+												"api",
+												"customer"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "125"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 07 Oct 2025 06:30:08 GMT"
+										},
+										{
+											"key": "x-amzn-Remapped-Date",
+											"value": "Tue, 07 Oct 2025 06:30:08 GMT"
+										},
+										{
+											"key": "x-amzn-RequestId",
+											"value": "f72d8d26-49fd-48a2-93d0-2a0c05030a5b"
+										},
+										{
+											"key": "x-amzn-Remapped-Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-amz-apigw-id",
+											"value": "SED5pHw9IAMEa2A="
+										},
+										{
+											"key": "Location",
+											"value": "/customer/7baf7c66-211b-49aa-a69d-c06eb5186521"
+										},
+										{
+											"key": "X-Cache",
+											"value": "Miss from cloudfront"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 f9c96818c2deb941a6a5b1650cb8c5b8.cloudfront.net (CloudFront)"
+										},
+										{
+											"key": "X-Amz-Cf-Pop",
+											"value": "GRU3-P12"
+										},
+										{
+											"key": "X-Amz-Cf-Id",
+											"value": "d7iRlz6-Pt2Y0qMWucT7FGg-v0m1v0sIVsrJDrXVZRIYBcB_7wQESA=="
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"7baf7c66-211b-49aa-a69d-c06eb5186521\",\n    \"name\": \"Guilherme Paternezi2\",\n    \"email\": \"guiduduck@gmail.com\",\n    \"cpf\": \"50762529831\"\n}"
+								}
+							]
 						},
 						{
 							"name": "getAllCustomer",
@@ -233,7 +594,81 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "getAllCustomer",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/user/api/customer",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"user",
+												"api",
+												"customer"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "240"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 07 Oct 2025 06:29:58 GMT"
+										},
+										{
+											"key": "x-amzn-Remapped-Date",
+											"value": "Tue, 07 Oct 2025 06:29:58 GMT"
+										},
+										{
+											"key": "x-amzn-RequestId",
+											"value": "0eac5922-e56e-4fed-82c4-07a52a7f1d36"
+										},
+										{
+											"key": "x-amzn-Remapped-Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-amz-apigw-id",
+											"value": "SED39F5YIAMEmZg="
+										},
+										{
+											"key": "X-Cache",
+											"value": "Miss from cloudfront"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 f9c96818c2deb941a6a5b1650cb8c5b8.cloudfront.net (CloudFront)"
+										},
+										{
+											"key": "X-Amz-Cf-Pop",
+											"value": "GRU3-P12"
+										},
+										{
+											"key": "X-Amz-Cf-Id",
+											"value": "mxuszFs-RvH_IoVlEL-c6wCachiFGcAkAGAPYQf0RWdmI4cyNHSp9w=="
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": \"0b120b70-682d-4a10-afa2-fb75596d6969\",\n        \"name\": \"verds\",\n        \"email\": \"51076311820@test.com\",\n        \"cpf\": \"51076311820\"\n    },\n    {\n        \"id\": \"45accd04-9b40-4207-a56d-17bc4a5beb43\",\n        \"name\": \"Guilherme Paternezi2\",\n        \"email\": \"guiduduck4@gmail.com\",\n        \"cpf\": \"50762529834\"\n    }\n]"
+								}
+							]
 						},
 						{
 							"name": "getCustomerById",
@@ -263,7 +698,82 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "getCustomerById",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/user/api/customer/{{customer_id}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"user",
+												"api",
+												"customer",
+												"{{customer_id}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "125"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 07 Oct 2025 06:30:14 GMT"
+										},
+										{
+											"key": "x-amzn-Remapped-Date",
+											"value": "Tue, 07 Oct 2025 06:30:14 GMT"
+										},
+										{
+											"key": "x-amzn-RequestId",
+											"value": "581cb3cb-a634-4c60-adf1-9218bf82b354"
+										},
+										{
+											"key": "x-amzn-Remapped-Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-amz-apigw-id",
+											"value": "SED6lE8ZoAMEFow="
+										},
+										{
+											"key": "X-Cache",
+											"value": "Miss from cloudfront"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 f9c96818c2deb941a6a5b1650cb8c5b8.cloudfront.net (CloudFront)"
+										},
+										{
+											"key": "X-Amz-Cf-Pop",
+											"value": "GRU3-P12"
+										},
+										{
+											"key": "X-Amz-Cf-Id",
+											"value": "40reheXv9iGfKozE83sjHy85tXQid--pc_gGWoReTwaYXyCVwsJpQQ=="
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"7baf7c66-211b-49aa-a69d-c06eb5186521\",\n    \"name\": \"Guilherme Paternezi2\",\n    \"email\": \"guiduduck@gmail.com\",\n    \"cpf\": \"50762529831\"\n}"
+								}
+							]
 						},
 						{
 							"name": "getCustomerByEmail",
@@ -294,7 +804,87 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "getCustomerByEmail",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/user/api/customer/email/guiduduck@gmail.com",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"user",
+												"api",
+												"customer",
+												"email",
+												"guiduduck@gmail.com"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "125"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 07 Oct 2025 06:30:19 GMT"
+										},
+										{
+											"key": "x-amzn-Remapped-Date",
+											"value": "Tue, 07 Oct 2025 06:30:19 GMT"
+										},
+										{
+											"key": "x-amzn-RequestId",
+											"value": "ee54e56b-7901-4c87-a865-7d789ac9cc50"
+										},
+										{
+											"key": "Content-Disposition",
+											"value": "inline;filename=f.txt"
+										},
+										{
+											"key": "x-amzn-Remapped-Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-amz-apigw-id",
+											"value": "SED7aGVEoAMEYgQ="
+										},
+										{
+											"key": "X-Cache",
+											"value": "Miss from cloudfront"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 f9c96818c2deb941a6a5b1650cb8c5b8.cloudfront.net (CloudFront)"
+										},
+										{
+											"key": "X-Amz-Cf-Pop",
+											"value": "GRU3-P12"
+										},
+										{
+											"key": "X-Amz-Cf-Id",
+											"value": "gIZyfq9n8gbdOGvCT958zU9dWz8NvDnjCg8kn2AvwSHh067JGL6Qnw=="
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"7baf7c66-211b-49aa-a69d-c06eb5186521\",\n    \"name\": \"Guilherme Paternezi2\",\n    \"email\": \"guiduduck@gmail.com\",\n    \"cpf\": \"50762529831\"\n}"
+								}
+							]
 						},
 						{
 							"name": "getCustomerByCpf",
@@ -325,7 +915,83 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "getCustomerByCpf",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/user/api/customer/cpf/50762529831",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"user",
+												"api",
+												"customer",
+												"cpf",
+												"50762529831"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "125"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 07 Oct 2025 06:30:26 GMT"
+										},
+										{
+											"key": "x-amzn-Remapped-Date",
+											"value": "Tue, 07 Oct 2025 06:30:25 GMT"
+										},
+										{
+											"key": "x-amzn-RequestId",
+											"value": "87bf3dba-1fb2-444e-b72e-ad59e344b4dd"
+										},
+										{
+											"key": "x-amzn-Remapped-Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-amz-apigw-id",
+											"value": "SED8YEBHIAMEBFQ="
+										},
+										{
+											"key": "X-Cache",
+											"value": "Miss from cloudfront"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 f9c96818c2deb941a6a5b1650cb8c5b8.cloudfront.net (CloudFront)"
+										},
+										{
+											"key": "X-Amz-Cf-Pop",
+											"value": "GRU3-P12"
+										},
+										{
+											"key": "X-Amz-Cf-Id",
+											"value": "HV2UwU8hJiYadjwdzBTvD6L2vdru18fVcVbMnbB-jyOO43jIeK1H5g=="
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"7baf7c66-211b-49aa-a69d-c06eb5186521\",\n    \"name\": \"Guilherme Paternezi2\",\n    \"email\": \"guiduduck@gmail.com\",\n    \"cpf\": \"50762529831\"\n}"
+								}
+							]
 						},
 						{
 							"name": "updateCustomer",
@@ -387,7 +1053,96 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "updateCustomer",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"name\": \"Wes Paternezi\",\n    \"cpf\": \"111625298651\",\n    \"email\": \"wes1@gmail.com\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/user/api/customer/{{customer_id}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"user",
+												"api",
+												"customer",
+												"{{customer_id}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "114"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 07 Oct 2025 06:30:31 GMT"
+										},
+										{
+											"key": "x-amzn-Remapped-Date",
+											"value": "Tue, 07 Oct 2025 06:30:31 GMT"
+										},
+										{
+											"key": "x-amzn-RequestId",
+											"value": "d1d9e6ce-1189-415e-9daa-d3f2ff4abdb5"
+										},
+										{
+											"key": "x-amzn-Remapped-Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-amz-apigw-id",
+											"value": "SED9SGDhoAMEDuw="
+										},
+										{
+											"key": "X-Cache",
+											"value": "Miss from cloudfront"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 f9c96818c2deb941a6a5b1650cb8c5b8.cloudfront.net (CloudFront)"
+										},
+										{
+											"key": "X-Amz-Cf-Pop",
+											"value": "GRU3-P12"
+										},
+										{
+											"key": "X-Amz-Cf-Id",
+											"value": "nmcYtfeeVl-_M_ePMNr3louhTzMHnO2vwIrQSdadgMEzJTNDwMI0-A=="
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"7baf7c66-211b-49aa-a69d-c06eb5186521\",\n    \"name\": \"Wes Paternezi\",\n    \"email\": \"wes1@gmail.com\",\n    \"cpf\": \"111625298651\"\n}"
+								}
+							]
 						},
 						{
 							"name": "deleteCustomer",
@@ -417,7 +1172,86 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "deleteCustomer",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseURL}}/user/api/customer/{{customer_id}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"user",
+												"api",
+												"customer",
+												"{{customer_id}}"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Content-Length",
+											"value": "0"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 07 Oct 2025 06:30:40 GMT"
+										},
+										{
+											"key": "x-amzn-Remapped-Date",
+											"value": "Tue, 07 Oct 2025 06:30:40 GMT"
+										},
+										{
+											"key": "x-amzn-RequestId",
+											"value": "e599b026-bf4c-420d-89ce-6621b643b21c"
+										},
+										{
+											"key": "x-amzn-Remapped-Content-Length",
+											"value": "0"
+										},
+										{
+											"key": "x-amzn-Remapped-Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-amz-apigw-id",
+											"value": "SED-pFDxIAMEk-w="
+										},
+										{
+											"key": "X-Cache",
+											"value": "Miss from cloudfront"
+										},
+										{
+											"key": "Via",
+											"value": "1.1 f9c96818c2deb941a6a5b1650cb8c5b8.cloudfront.net (CloudFront)"
+										},
+										{
+											"key": "X-Amz-Cf-Pop",
+											"value": "GRU3-P12"
+										},
+										{
+											"key": "X-Amz-Cf-Id",
+											"value": "BAtaoLOaLrZVLbJJ0hig4FyUjz9NqWgvikKhOGPPfKZ3329FKGr7SA=="
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
 						}
 					]
 				},
