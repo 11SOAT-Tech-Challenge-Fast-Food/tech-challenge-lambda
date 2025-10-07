@@ -114,9 +114,7 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     aws_api_gateway_integration.eks_order_id_delete,
     aws_api_gateway_integration.eks_payment_post,
     aws_api_gateway_integration.eks_payment_id_get,
-    aws_api_gateway_integration.eks_payment_webhook_post,
-    aws_api_gateway_method.eks_docs_get,
-    aws_api_gateway_resource.eks_docs,
+    aws_api_gateway_integration.eks_payment_webhook_post
   ]
 }
 
