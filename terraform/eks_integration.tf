@@ -51,8 +51,36 @@ resource "aws_api_gateway_integration" "eks_health_get" {
   http_method             = aws_api_gateway_method.eks_health_get.http_method
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
-  uri                     = "${var.api_uri}/actuator/health/liveness"
+  uri                     = "http://${var.api_uri}:8080/actuator/health/liveness"
 }
+
+# -------------------------------------------------
+# /api/swagger [GET] - Público (sem JWT)
+# -------------------------------------------------
+resource "aws_api_gateway_resource" "eks_swagger" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  parent_id   = aws_api_gateway_resource.eks.id
+  path_part   = "swagger"
+}
+
+resource "aws_api_gateway_method" "eks_swagger_get" {
+  rest_api_id   = aws_api_gateway_rest_api.main.id
+  resource_id   = aws_api_gateway_resource.eks_swagger.id
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "eks_swagger_get" {
+  rest_api_id             = aws_api_gateway_rest_api.main.id
+  resource_id             = aws_api_gateway_resource.eks_swagger.id
+  http_method             = aws_api_gateway_method.eks_swagger_get.http_method
+  integration_http_method = "GET"
+  type                    = "HTTP_PROXY"
+
+  # 🔗 URL pública do Swagger rodando no backend
+  uri = "http://${var.api_uri}:8080/swagger-ui.html"
+}
+
 
 # --------------------CUSTOMER-----------------------------
 # /api/customer [POST] - Protegido com JWT
@@ -71,7 +99,7 @@ resource "aws_api_gateway_integration" "eks_customer_post" {
   http_method             = aws_api_gateway_method.eks_customer_post.http_method
   integration_http_method = "POST"
   type                    = "HTTP_PROXY"
-  uri                     = "${var.api_uri}/customer"
+  uri                     = "http://${var.api_uri}:8080/customer"
 }
 
 # -------------------------------------------------
@@ -90,7 +118,7 @@ resource "aws_api_gateway_integration" "eks_customer_get" {
   http_method             = aws_api_gateway_method.eks_customer_get.http_method
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
-  uri                     = "${var.api_uri}/customer"
+  uri                     = "http://${var.api_uri}:8080/customer"
 }
 
 # -------------------------------------------------
@@ -121,7 +149,7 @@ resource "aws_api_gateway_integration" "eks_customer_id_get" {
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
 
-  uri = "${var.api_uri}/customer/{id}"
+  uri = "http://${var.api_uri}:8080/customer/{id}"
 
   request_parameters = {
     "integration.request.path.id" = "method.request.path.id"
@@ -162,7 +190,7 @@ resource "aws_api_gateway_integration" "eks_customer_email_get" {
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
 
-  uri = "${var.api_uri}/customer/email/{email}"
+  uri = "http://${var.api_uri}:8080/customer/email/{email}"
 
   request_parameters = {
     "integration.request.path.email" = "method.request.path.email"
@@ -204,7 +232,7 @@ resource "aws_api_gateway_integration" "eks_customer_cpf_get" {
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
 
-  uri = "${var.api_uri}/customer/cpf/{cpf}"
+  uri = "http://${var.api_uri}:8080/customer/cpf/{cpf}"
 
   request_parameters = {
     "integration.request.path.cpf" = "method.request.path.cpf"
@@ -237,7 +265,7 @@ resource "aws_api_gateway_integration" "eks_customer_id_put" {
   integration_http_method = "PUT"
   type                    = "HTTP_PROXY"
 
-  uri = "${var.api_uri}/customer/{id}"
+  uri = "http://${var.api_uri}:8080/customer/{id}"
   
 
   request_parameters = {
@@ -269,7 +297,7 @@ resource "aws_api_gateway_integration" "eks_customer_id_delete" {
   integration_http_method = "DELETE"
   type                    = "HTTP_PROXY"
 
-  uri = "${var.api_uri}/customer/{id}"
+  uri = "http://${var.api_uri}:8080/customer/{id}"
 
   request_parameters = {
     "integration.request.path.id" = "method.request.path.id"
@@ -293,7 +321,7 @@ resource "aws_api_gateway_integration" "eks_product_post" {
   http_method             = aws_api_gateway_method.eks_product_post.http_method
   integration_http_method = "POST"
   type                    = "HTTP_PROXY"
-  uri                     = "${var.api_uri}/product"
+  uri                     = "http://${var.api_uri}:8080/product"
 }
 # -------------------------------------------------
 # /api/product [GET] - Publico
@@ -310,7 +338,7 @@ resource "aws_api_gateway_integration" "eks_product_get" {
   http_method             = aws_api_gateway_method.eks_product_get.http_method
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
-  uri                     = "${var.api_uri}/product"
+  uri                     = "http://${var.api_uri}:8080/product"
 }
 # -------------------------------------------------
 # /api/product/category/{category} [GET] - Público
@@ -344,7 +372,7 @@ resource "aws_api_gateway_integration" "eks_product_category_get" {
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
 
-  uri = "${var.api_uri}/product/category/{category}"
+  uri = "http://${var.api_uri}:8080/product/category/{category}"
 
   request_parameters = {
     "integration.request.path.category" = "method.request.path.category"
@@ -378,7 +406,7 @@ resource "aws_api_gateway_integration" "eks_product_id_get" {
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
 
-  uri = "${var.api_uri}/product/{id}"
+  uri = "http://${var.api_uri}:8080/product/{id}"
 
   request_parameters = {
     "integration.request.path.id" = "method.request.path.id"
@@ -409,7 +437,7 @@ resource "aws_api_gateway_integration" "eks_product_put" {
   type                    = "HTTP_PROXY"
 
   # 👇 backend espera /product, sem {id}
-  uri = "${var.api_uri}/product"
+  uri = "http://${var.api_uri}:8080/product"
 
   passthrough_behavior = "WHEN_NO_MATCH"
   content_handling     = "CONVERT_TO_TEXT"
@@ -437,7 +465,7 @@ resource "aws_api_gateway_integration" "eks_product_id_delete" {
   integration_http_method = "DELETE"
   type                    = "HTTP_PROXY"
 
-  uri = "${var.api_uri}/product/{id}"
+  uri = "http://${var.api_uri}:8080/product/{id}"
 
   request_parameters = {
     "integration.request.path.id" = "method.request.path.id"
@@ -467,7 +495,7 @@ resource "aws_api_gateway_integration" "eks_order_post" {
   integration_http_method = "POST"
   type                    = "HTTP_PROXY"
 
-  uri = "${var.api_uri}/order"
+  uri = "http://${var.api_uri}:8080/order"
 
   passthrough_behavior = "WHEN_NO_MATCH"
   content_handling     = "CONVERT_TO_TEXT"
@@ -490,7 +518,7 @@ resource "aws_api_gateway_integration" "eks_order_get" {
   http_method             = aws_api_gateway_method.eks_order_get.http_method
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
-  uri                     = "${var.api_uri}/order"
+  uri                     = "http://${var.api_uri}:8080/order"
 }
 
 # -------------------------------------------------
@@ -521,7 +549,7 @@ resource "aws_api_gateway_integration" "eks_order_id_get" {
   integration_http_method = "GET"
   type                    = "HTTP_PROXY"
 
-  uri = "${var.api_uri}/order/{id}"
+  uri = "http://${var.api_uri}:8080/order/{id}"
 
   request_parameters = {
     "integration.request.path.id" = "method.request.path.id"
@@ -555,7 +583,7 @@ resource "aws_api_gateway_integration" "eks_order_id_put" {
   type                    = "HTTP_PROXY"
 
   # 🔗 Proxy direto pro backend
-  uri = "${var.api_uri}/order/{id}"
+  uri = "http://${var.api_uri}:8080/order/{id}"
 
   request_parameters = {
     "integration.request.path.id" = "method.request.path.id"
@@ -588,7 +616,7 @@ resource "aws_api_gateway_integration" "eks_order_id_delete" {
   type                    = "HTTP_PROXY"
 
   # 🔗 Proxy direto para o backend
-  uri = "${var.api_uri}/order/{id}"
+  uri = "http://${var.api_uri}:8080/order/{id}"
 
   request_parameters = {
     "integration.request.path.id" = "method.request.path.id"
@@ -613,7 +641,7 @@ resource "aws_api_gateway_integration" "eks_payment_post" {
   type                    = "HTTP_PROXY"
 
   # 🔗 Proxy direto para o backend
-  uri = "${var.api_uri}/payment"
+  uri = "http://${var.api_uri}:8080/payment"
 
   passthrough_behavior = "WHEN_NO_MATCH"
   content_handling     = "CONVERT_TO_TEXT"
@@ -648,7 +676,7 @@ resource "aws_api_gateway_integration" "eks_payment_id_get" {
   type                    = "HTTP_PROXY"
 
   # 🔗 Proxy direto para o backend
-  uri = "${var.api_uri}/payment/{id}"
+  uri = "http://${var.api_uri}:8080/payment/{id}"
 
   request_parameters = {
     "integration.request.path.id" = "method.request.path.id"
@@ -678,7 +706,7 @@ resource "aws_api_gateway_integration" "eks_payment_webhook_post" {
   type                    = "HTTP_PROXY"
 
   # 🔗 Proxy direto para o backend
-  uri = "${var.api_uri}/payment/webhook"
+  uri = "http://${var.api_uri}:8080/payment/webhook"
 
   passthrough_behavior = "WHEN_NO_MATCH"
   content_handling     = "CONVERT_TO_TEXT"
