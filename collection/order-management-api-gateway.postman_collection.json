@@ -1,0 +1,1021 @@
+{
+	"info": {
+		"_postman_id": "63f9d65c-860c-4770-b400-f8ea84c927d0",
+		"name": "order-management-api-gateway",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31136225"
+	},
+	"item": [
+		{
+			"name": "api-gateway",
+			"item": [
+				{
+					"name": "lambda",
+					"item": [
+						{
+							"name": "/user/register",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"cpf\": \"51076311820\",\r\n    \"email\": \"51076311820@test.com\",\r\n    \"name\": \"verds\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/register",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"register"
+									]
+								},
+								"description": "Generated from cURL: curl -X POST \"<URL>/auth\" \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"cpf\": \"507625298311\"}'"
+							},
+							"response": []
+						},
+						{
+							"name": "/user/auth",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Get the response body\r",
+											"const responseBody = pm.response.json();\r",
+											"\r",
+											"pm.environment.set(\"cognito_access_token\", responseBody.cognito_access_token);\r",
+											"pm.environment.set(\"jwt\", responseBody.jwt);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"cpf\": \"51076311820\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/auth",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"auth"
+									]
+								},
+								"description": "Generated from cURL: curl -X POST \"<URL>/auth\" \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"cpf\": \"507625298311\"}'"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "health",
+					"item": [
+						{
+							"name": "/user/api/health",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://{{baseURL}}/user/api/health",
+									"protocol": "https",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"health"
+									]
+								},
+								"description": "Generated from cURL: curl -X POST \"<URL>/auth\" \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"cpf\": \"507625298311\"}'"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "customer",
+					"item": [
+						{
+							"name": "createCustomer",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Get the response body\r",
+											"const responseBody = pm.response.json();\r",
+											"\r",
+											"pm.environment.set(\"customer_id\", responseBody.id);\r",
+											"pm.environment.set(\"customer_email\", responseBody.email);\r",
+											"pm.environment.set(\"customer_cpf\", responseBody.cpf);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Guilherme Paternezi2\",\n    \"email\": \"guiduduck@gmail.com\",\n    \"cpf\": \"50762529831\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/customer",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"customer"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllCustomer",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/customer",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"customer"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getCustomerById",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/customer/{{customer_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"customer",
+										"{{customer_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getCustomerByEmail",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/customer/email/guiduduck@gmail.com",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"customer",
+										"email",
+										"guiduduck@gmail.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getCustomerByCpf",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/customer/cpf/50762529831",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"customer",
+										"cpf",
+										"50762529831"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateCustomer",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Get the response body\r",
+											"const responseBody = pm.response.json();\r",
+											"\r",
+											"pm.environment.set(\"customer_id\", responseBody.id);\r",
+											"pm.environment.set(\"customer_email\", responseBody.email);\r",
+											"pm.environment.set(\"customer_cpf\", responseBody.cpf);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Wes Paternezi\",\n    \"cpf\": \"111625298651\",\n    \"email\": \"wes1@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/customer/{{customer_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"customer",
+										"{{customer_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteCustomer",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/customer/{{customer_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"customer",
+										"{{customer_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "product",
+					"item": [
+						{
+							"name": "createProduct",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Get the response body\r",
+											"const responseBody = pm.response.json();\r",
+											"\r",
+											"// Save the ID to the global environment\r",
+											"pm.environment.set(\"product_id\", responseBody.id);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"salada da verdinha\",\r\n    \"category\": \"SNACK\",\r\n    \"price\": 50.00,\r\n    \"amount\": 10\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/product",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"product"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateProduct",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{product_id}}\",\r\n    \"name\": \"nova salada da verdinha\",\r\n    \"price\": 150.00,\r\n    \"category\": \"SNACK\",\r\n    \"amount\": 5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/product",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"product"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllProductsByCategory",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/product/category/SNACK",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"product",
+										"category",
+										"SNACK"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllProducts",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/product",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"product"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getProductById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/product/{{product_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"product",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteProductById",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/product/{{product_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"product",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "order",
+					"item": [
+						{
+							"name": "createOrder",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Get the response body\r",
+											"const responseBody = pm.response.json();\r",
+											"\r",
+											"pm.environment.set(\"order_id\", responseBody.id);\r",
+											"pm.environment.set(\"status\", responseBody.status);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"customer_id\": \"{{customer_id}}\",\n    \"products\": [\n        \"{{product_id}}\"\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/order",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllOrders",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/order",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getOrderById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/order/{{order_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order",
+										"{{order_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllOrdersByStatus",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/order/status/{{status}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order",
+										"status",
+										"{{status}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateOrder - CREATED -> PAID -> RECEIVED",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"PAID\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/order/{{order_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order",
+										"{{order_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateOrder - RECEIVED -> IN_PREPARATION",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"IN_PREPARATION\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/order/{{order_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order",
+										"{{order_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateOrder - IN_PREPARATION -> OVERDUE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"OVERDUE\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/order/{{order_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order",
+										"{{order_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateOrder - IN_PREPARATION  -> READY",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"READY\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/order/{{order_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order",
+										"{{order_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateOrder - READY -> COMPLETED",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"COMPLETED\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/order/{{order_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order",
+										"{{order_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "cancelOrder",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/order/{{order_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order",
+										"{{order_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "updateOrder - CREATED -> CANCELLED",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"CANCELED\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/order/{{order_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"order",
+										"{{order_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "payment",
+					"item": [
+						{
+							"name": "createQrcode",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Get the response body",
+											"const responseBody = pm.response.json();",
+											"",
+											"pm.environment.set(\"id\", responseBody.external_id);",
+											"pm.environment.set(\"payment_id\", responseBody.id);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"order_id\": \"{{order_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/payment",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"payment"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getPaymentDetails",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/user/api/payment/{{payment_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"payment",
+										"{{payment_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "processWebhook",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"action\": \"order.processed\",\n    \"api_version\": \"v1\",\n    \"application_id\": \"5826758621263433\",\n    \"data\": {\n        \"external_reference\": \"baf316f9-0883-44c7-9bbe-efb504e344be\",\n        \"id\": \"{{id}}\",\n        \"status\": \"processed\",\n        \"status_detail\": \"accredited\",\n        \"total_amount\": \"37.50\",\n        \"total_paid_amount\": \"37.50\",\n        \"transactions\": {\n            \"payments\": [\n                {\n                    \"amount\": \"37.50\",\n                    \"id\": \"{{payment_id}}\",\n                    \"paid_amount\": \"37.50\",\n                    \"payment_method\": {\n                        \"id\": \"account_money\",\n                        \"installments\": 1,\n                        \"type\": \"account_money\"\n                    },\n                    \"reference\": {\n                        \"id\": \"120425553788\"\n                    },\n                    \"status\": \"processed\",\n                    \"status_detail\": \"accredited\"\n                }\n            ]\n        },\n        \"type\": \"qr\",\n        \"version\": 2\n    },\n    \"date_created\": \"2025-07-30T21:58:38.698731467Z\",\n    \"live_mode\": false,\n    \"type\": \"order\",\n    \"user_id\": \"2580894029\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/user/api/payment/webhook",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"user",
+										"api",
+										"payment",
+										"webhook"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

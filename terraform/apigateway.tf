@@ -68,7 +68,24 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     redeploy_hash = sha1(jsonencode([
       aws_api_gateway_rest_api.main.id,
       aws_api_gateway_authorizer.jwt_authorizer.id,
-      aws_api_gateway_method.eks_health_get.id,
+      aws_api_gateway_integration.auth_lambda.id,
+      aws_api_gateway_integration.register_lambda.id,
+      aws_api_gateway_integration.eks_customer_get.id,
+      aws_api_gateway_integration.eks_customer_post.id,
+      aws_api_gateway_integration.eks_customer_id_put.id,
+      aws_api_gateway_integration.eks_customer_id_delete.id,
+      aws_api_gateway_integration.eks_health_get.id,
+      aws_api_gateway_integration.eks_product_get.id,
+      aws_api_gateway_integration.eks_product_category_get.id,
+      aws_api_gateway_integration.eks_product_id_get.id,
+      aws_api_gateway_integration.eks_product_id_delete.id,
+      aws_api_gateway_integration.eks_order_id_get.id,
+      aws_api_gateway_integration.eks_order_get.id,
+      aws_api_gateway_integration.eks_order_id_put.id,
+      aws_api_gateway_integration.eks_order_id_delete.id,
+      aws_api_gateway_integration.eks_payment_post.id,
+      aws_api_gateway_integration.eks_payment_id_get.id,
+      aws_api_gateway_integration.eks_payment_webhook_post.id
     ]))
   }
 
@@ -80,6 +97,23 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     aws_api_gateway_integration.auth_lambda,
     aws_api_gateway_integration.register_lambda,
     aws_api_gateway_authorizer.jwt_authorizer,
+    aws_api_gateway_integration.eks_customer_get,
+    aws_api_gateway_integration.eks_customer_post,
+    aws_api_gateway_integration.eks_customer_id_put,
+    aws_api_gateway_integration.eks_customer_id_delete,
+    aws_api_gateway_integration.eks_health_get,
+    aws_api_gateway_integration.eks_product_get,
+    aws_api_gateway_integration.eks_product_post,
+    aws_api_gateway_integration.eks_product_category_get,
+    aws_api_gateway_integration.eks_product_id_get,
+    aws_api_gateway_integration.eks_product_id_delete,
+    aws_api_gateway_integration.eks_order_get,
+    aws_api_gateway_integration.eks_order_id_get,
+    aws_api_gateway_integration.eks_order_id_put,
+    aws_api_gateway_integration.eks_order_id_delete,
+    aws_api_gateway_integration.eks_payment_post,
+    aws_api_gateway_integration.eks_payment_id_get,
+    aws_api_gateway_integration.eks_payment_webhook_post
   ]
 }
 

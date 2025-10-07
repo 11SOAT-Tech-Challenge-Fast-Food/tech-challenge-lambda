@@ -1,33 +1,81 @@
-## Arquitetura
-
-A solução é composta por:
-
-- **AWS Cognito** → Autenticação de usuários via CPF (username) e e-mail como alias único.
-- **AWS Lambda**
-  - `registerUser`: Registra o usuário no Cognito e insere no banco de dados.
-  - `userAuth`: Autentica o usuário via CPF e gera token JWT.
-- **Amazon RDS (PostgreSQL)** → Armazena dados persistentes de clientes.
-- **API Gateway** → Expõe endpoints públicos `/user/register` e `/user/auth`.
 
 ---
-## Estrutura do Projeto
-```
 
+# Tech Challenge – Backend AWS + EKS
+
+## Arquitetura
+
+A solução é composta por múltiplos componentes integrados dentro da AWS:
+
+### 🔹 Autenticação e Cadastro
+
+* **AWS Cognito**
+
+  * Autenticação de usuários via CPF (username) e e-mail (alias único).
+  * Geração e validação de tokens JWT.
+* **AWS Lambda**
+
+  * `registerUser` → Registra o usuário no Cognito e insere no banco de dados.
+  * `userAuth` → Autentica o usuário via CPF e retorna token JWT.
+
+### 🔹 API Gateway
+
+* Exposição central dos endpoints:
+
+  * `/user/register` e `/user/auth` → conectados às Lambdas.
+  * `/user/api/...` → proxy reverso para os serviços no EKS.
+* Proteção com **Custom JWT Authorizer** (Lambda Authorizer).
+* Integrações via **HTTP_PROXY** para os serviços dentro do cluster.
+
+### 🔹 Autorização (JWT Authorizer)
+
+* Lambda `authorizer`
+
+  * Executada automaticamente pelo **API Gateway** antes de qualquer endpoint protegido.
+  * Valida o **token JWT** enviado no header `Authorization`.
+  * Caso válido, o acesso é liberado e o contexto do usuário é injetado na requisição.
+  * Caso inválido, retorna `401 Unauthorized`.
+  * Integração configurada no Terraform via `aws_api_gateway_authorizer`.
+
+### 🔹 Backend no EKS
+
+* Aplicação rodando no cluster Kubernetes (EKS).
+* Endpoints RESTful:
+
+  * `/api/customer`
+  * `/api/product`
+  * `/api/order`
+  * `/api/payment`
+  * `/api/health`
+* Comunicação via API Gateway com autenticação JWT.
+
+### 🔹 Banco de Dados
+
+* **Amazon RDS (PostgreSQL)** → Armazena dados de clientes e entidades de negócio (orders, products, etc).
+
+---
+
+## 🗂 Estrutura do Projeto
+
+```bash
 .
 ├── terraform/
 │   ├── main.tf
+│   ├── apigateway.tf
 │   ├── cognito.tf
-│   ├── api_lambda.tf
+│   ├── lambdas.tf
 │   ├── variables.tf
-│   └── outputs.tf
+│   ├── outputs.tf
+│   └── eks.tf
 ├── lambdas/
 │   ├── registerUser/
 │   │   └── index.js
-│   └── userAuth/
+│   ├── userAuth/
+│   │   └── index.js
+│   └── jwtAuthorizer/
 │       └── index.js
 └── README.md
-
-````
+```
 
 ---
 
@@ -35,8 +83,9 @@ A solução é composta por:
 
 ### Pré-requisitos
 
-- [Terraform](https://developer.hashicorp.com/terraform/downloads)
-- Conta AWS configurada (`aws configure`)
+* [Terraform](https://developer.hashicorp.com/terraform/downloads)
+* AWS CLI configurado (`aws configure`)
+* Bucket S3 para armazenamento de estado remoto (opcional)
 
 ### Passos
 
@@ -44,42 +93,44 @@ A solução é composta por:
 cd terraform
 terraform init
 terraform plan
-terraform apply
-````
+terraform apply -auto-approve
+```
 
 Isso criará:
-* Cognito User Pool
-* Cognito User Pool Client
-* API Gateway (com endpoints `/user/register` e `/user/auth`)
-* Lambdas e permissões necessárias
+
+* Cognito User Pool + User Pool Client
+* Lambda Functions (`registerUser`, `userAuth`, `jwtAuthorizer`)
+* API Gateway com todos os endpoints configurados
+* Integrações HTTP Proxy com o EKS
+* RDS PostgreSQL para persistência de dados
 
 ---
-## Sobre as Lambdas
 
-### `/user/register`
+## Endpoints Principais
+
+### `/user/register` → Registro de usuário
 
 Fluxo:
 
-1. Valida CPF e/ou e-mail.
+1. Valida CPF e e-mail.
 2. Verifica duplicidade:
 
    * CPF duplicado → `409 Conflict`
-   * E-mail duplicado (via alias do Cognito) → `409 Conflict`
+   * E-mail duplicado → `409 Conflict`
 3. Cria o usuário no Cognito.
 4. Marca o e-mail como verificado.
-5. Insere o cliente no RDS.
+5. Insere no banco via RDS.
 
 #### Exemplo de requisição:
 
 ```bash
-curl --location 'https://aws.execute-api.us-east-1.amazonaws.com/user/register' \
+curl --location 'https://<api-id>.execute-api.us-east-1.amazonaws.com/user/register' \
 --header 'Content-Type: application/json' \
---data-raw '{
-    "cpf": "11076333911",
-    "email": "verd123@test.com",
-    "name": "verds"
+--data '{
+  "cpf": "11076333911",
+  "email": "test@example.com",
+  "name": "Usuário Teste"
 }'
-
 ```
 
 #### Resposta:
@@ -88,42 +139,27 @@ curl --location 'https://aws.execute-api.us-east-1.amazonaws.com/user/register' 
 {
   "message": "Usuário registrado com sucesso!",
   "cpf": "11076333911",
-  "db_customer_id": "db48c9e8-c2ba-41d6-9643-ec04cba6c401",
-  "audit": [
-    "Criando usuário no Cognito",
-    "Marcando e-mail como verificado",
-    "Conectando ao banco",
-    "Inserindo cliente no banco"
-  ]
+  "db_customer_id": "db48c9e8-c2ba-41d6-9643-ec04cba6c401"
 }
 ```
 
 ---
 
-### `/user/auth`
+### `/user/auth` → Autenticação via CPF
 
 Fluxo:
 
-1. Recebe o CPF.
-2. Busca o usuário no Cognito.
-3. Gera token JWT com payload:
-
-   ```json
-   {
-     "sub": "11076333911",
-     "cpf": "11076333911",
-     "email": "user@test.com",
-     "name": "Usuário Teste"
-   }
-   ```
+1. Busca usuário no Cognito via CPF.
+2. Gera token JWT com payload contendo `cpf`, `email`, `name`.
+3. Retorna o token ao cliente.
 
 #### Exemplo:
 
 ```bash
-curl --location 'https://aws.execute-api.us-east-1.amazonaws.com/user/auth' \
+curl --location 'https://<api-id>.execute-api.us-east-1.amazonaws.com/user/auth' \
 --header 'Content-Type: application/json' \
 --data '{
-    "cpf": "11076333911"
+  "cpf": "11076333911"
 }'
 ```
 
@@ -138,9 +174,39 @@ curl --location 'https://aws.execute-api.us-east-1.amazonaws.com/user/auth' \
 
 ---
 
+## Endpoints Proxy (EKS)
+
+Todos os endpoints abaixo são acessados via API Gateway com prefixo `/user/api/...`.
+
+| Método   | Endpoint                                | Autenticação | Descrição                       |
+| -------- | --------------------------------------- | ------------ | ------------------------------- |
+| `GET`    | `/user/api/health`                      | ❌ Pública    | Checagem de saúde da aplicação  |
+| `GET`    | `/user/api/customer`                    | ✅ JWT        | Lista clientes                  |
+| `POST`   | `/user/api/customer`                    | ✅ JWT        | Cria cliente                    |
+| `GET`    | `/user/api/customer/{id}`               | ✅ JWT        | Busca cliente por ID            |
+| `GET`    | `/user/api/customer/cpf/{cpf}`          | ✅ JWT        | Busca cliente por CPF           |
+| `PUT`    | `/user/api/customer/{id}`               | ✅ JWT        | Atualiza cliente                |
+| `DELETE` | `/user/api/customer/{id}`               | ✅ JWT        | Deleta cliente                  |
+| `GET`    | `/user/api/product`                     | ❌ Pública    | Lista produtos                  |
+| `POST`   | `/user/api/product`                     | ✅ JWT        | Cria produto                    |
+| `PUT`    | `/user/api/product`                     | ✅ JWT        | Atualiza produto                |
+| `GET`    | `/user/api/product/{id}`                | ❌ Pública    | Detalhes do produto             |
+| `DELETE` | `/user/api/product/{id}`                | ✅ JWT        | Exclui produto                  |
+| `GET`    | `/user/api/product/category/{category}` | ❌ Pública    | Lista por categoria             |
+| `GET`    | `/user/api/order`                       | ✅ JWT        | Lista pedidos                   |
+| `POST`   | `/user/api/order`                       | ✅ JWT        | Cria pedido                     |
+| `GET`    | `/user/api/order/{id}`                  | ✅ JWT        | Detalhes de pedido              |
+| `PUT`    | `/user/api/order/{id}`                  | ✅ JWT        | Atualiza pedido                 |
+| `DELETE` | `/user/api/order/{id}`                  | ✅ JWT        | Deleta pedido                   |
+| `POST`   | `/user/api/payment`                     | ✅ JWT        | Cria pagamento                  |
+| `GET`    | `/user/api/payment/{id}`                | ✅ JWT        | Detalhes de pagamento           |
+| `POST`   | `/user/api/payment/webhook`             | ❌ Pública    | Webhook de retorno do pagamento |
+
+---
+
 ## Banco de Dados (RDS)
 
-Tabela: `customer`
+Tabela base: `customer`
 
 ```sql
 CREATE TABLE IF NOT EXISTS customer(
@@ -153,37 +219,38 @@ CREATE TABLE IF NOT EXISTS customer(
 );
 ```
 
-Conexão configurada nas variáveis de ambiente das Lambdas:
-
-| Variável      | Descrição       |
-| ------------- | --------------- |
-| `DB_HOST`     | Endpoint do RDS |
-| `DB_PORT`     | Porta (5432)    |
-| `DB_NAME`     | Nome do banco   |
-| `DB_USER`     | Usuário         |
-| `DB_PASSWORD` | Senha           |
+Configurações via variáveis de ambiente (`DB_*`).
 
 ---
 
 ## Variáveis de Ambiente (Lambda)
 
-| Variável       | Descrição                         |
-| -------------- | --------------------------------- |
-| `USER_POOL_ID` | ID do Cognito User Pool           |
-| `JWT_SECRET`   | Segredo JWT                       |
-| `JWT_ISSUER`   | Nome do emissor do token          |
-| `JWT_TTL_MIN`  | Tempo de expiração do token       |
-| `DB_*`         | Configurações do banco PostgreSQL |
+| Variável                                                  | Descrição                   |
+| --------------------------------------------------------- | --------------------------- |
+| `USER_POOL_ID`                                            | ID do Cognito User Pool     |
+| `JWT_SECRET`                                              | Segredo JWT                 |
+| `JWT_ISSUER`                                              | Nome do emissor do token    |
+| `JWT_TTL_MIN`                                             | Tempo de expiração do token |
+| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Configurações do RDS        |
 
 ---
 
-## Observações
+## Observações Importantes
 
-* O CPF é o identificador (`Username`) principal no Cognito.
-* O e-mail é um alias **único** (`alias_attributes = ["email"]`).
-* Em caso de duplicidade de CPF → `UsernameExistsException`.
-* Em caso de duplicidade de e-mail → `AliasExistsException`.
+* O CPF é o identificador principal (`Username`) no Cognito.
+* O e-mail é um **alias único** (`alias_attributes = ["email"]`).
+* Exceções de duplicidade:
 
-## Desenvolvedores
-| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/79323910?v=4" width=115><br><sub>Bianca Vediner</sub>](https://github.com/BiaVediner) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/79324306?v=4" width=115><br><sub>Wesley Paternezi</sub>](https://github.com/WesleyPaternezi) | [<img loading="lazy" src="https://avatars.githubusercontent.com/u/61800458?v=4 " width=115><br><sub>Guilherme Paternezi</sub>](https://github.com/guilherme-paternezi) |
-|:-----------------------------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+  * `UsernameExistsException` → CPF duplicado.
+  * `AliasExistsException` → e-mail duplicado.
+* Todos os endpoints do `/api/*` são proxys diretos para o backend EKS via HTTP Proxy.
+* O JWT Authorizer valida o token antes de permitir o acesso aos recursos protegidos.
+
+---
+
+## 👩‍💻 Desenvolvedores
+
+| [<img src="https://avatars.githubusercontent.com/u/79323910?v=4" width=115><br><sub>Bianca Vediner</sub>](https://github.com/BiaVediner) | [<img src="https://avatars.githubusercontent.com/u/79324306?v=4" width=115><br><sub>Wesley Paternezi</sub>](https://github.com/WesleyPaternezi) | [<img src="https://avatars.githubusercontent.com/u/61800458?v=4" width=115><br><sub>Guilherme Paternezi</sub>](https://github.com/guilherme-paternezi) |
+| :--------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------: |
+
+---
