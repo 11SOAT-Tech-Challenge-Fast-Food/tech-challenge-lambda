@@ -84,7 +84,7 @@ jobs:
         working-directory: ./terraform
         run: |
           terraform plan -out=tfplan \
-            -var "api_uri=http://$lb_dns:8080" \
+            -var "api_uri=http://a2dbd1911ef6e4ae5885660baa1c673f-469276399.us-east-1.elb.amazonaws.com:8080" \
             -var "jwt_secret=${{ secrets.JWT_TOKEN }}" \
             -var "db_username=${{ secrets.DB_USER }}" \
             -var "db_password=${{ secrets.DB_PASS }}" \
