@@ -1,11 +1,22 @@
 const jwt = require("jsonwebtoken");
 
 exports.handler = async (event) => {
+  console.log("Event recebido:", JSON.stringify(event));
+
   try {
-    const token = event.headers?.Authorization?.split(" ")[1]; // se vier como REQUEST
+    const token = event.headers?.Authorization?.split(" ")[1];
     if (!token) throw new Error("Missing token");
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // mesmo segredo usado em /auth
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const methodArnParts = event.methodArn.split("/");
+
+    const apiGatewayArn = methodArnParts[0];
+    const stage = methodArnParts[1];
+
+    const wildcardArn = `${apiGatewayArn}/${stage}/*/*`;
+
+    console.log("Liberando todas as rotas no stage:", wildcardArn);
 
     return {
       principalId: decoded.sub || decoded.cpf || "anonymous",
@@ -15,7 +26,7 @@ exports.handler = async (event) => {
           {
             Action: "execute-api:Invoke",
             Effect: "Allow",
-            Resource: event.methodArn,
+            Resource: wildcardArn,
           },
         ],
       },
@@ -34,7 +45,7 @@ exports.handler = async (event) => {
           {
             Action: "execute-api:Invoke",
             Effect: "Deny",
-            Resource: event.methodArn,
+            Resource: "*",
           },
         ],
       },

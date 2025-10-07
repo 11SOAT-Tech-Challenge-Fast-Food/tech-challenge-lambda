@@ -53,7 +53,7 @@ resource "aws_api_gateway_integration" "register_lambda" {
 resource "aws_api_gateway_authorizer" "jwt_authorizer" {
   name                             = "jwt-authorizer"
   rest_api_id                      = aws_api_gateway_rest_api.main.id
-  authorizer_uri                   = aws_lambda_function.jwt_authorizer.invoke_arn
+  authorizer_uri = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.jwt_authorizer.arn}/invocations"
   authorizer_result_ttl_in_seconds = 300
   identity_source                  = "method.request.header.Authorization"
   type                             = "REQUEST"
@@ -68,6 +68,7 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     redeploy_hash = sha1(jsonencode([
       aws_api_gateway_rest_api.main.id,
       aws_api_gateway_authorizer.jwt_authorizer.id,
+      aws_api_gateway_method.eks_health_get.id,
     ]))
   }
 
