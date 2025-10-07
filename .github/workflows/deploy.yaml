@@ -83,13 +83,7 @@ jobs:
       - name: Terraform Plan
         working-directory: ./terraform
         run: |
-          terraform plan \
-            -var "api_uri=http://$LB_DNS" \
-            -var "jwt_token=${{ secrets.JWT_TOKEN }}" \
-            -var "db_username=${{ secrets.DB_USER }}" \
-            -var "db_password=${{ secrets.DB_PASS }}" \
-            -var "db_host=$RDS_HOST" \
-            -out=tfplan
+          terraform plan 
 
       # Terraform Apply
       - name: Terraform Apply
