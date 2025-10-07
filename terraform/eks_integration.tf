@@ -78,6 +78,9 @@ resource "aws_api_gateway_integration" "eks_docs_get" {
   type                    = "HTTP_PROXY"
 
   uri = "http://${var.api_uri}:8080/swagger-ui.html"
+
+  passthrough_behavior = "WHEN_NO_MATCH"
+  content_handling     = "CONVERT_TO_TEXT"
 }
 
 
