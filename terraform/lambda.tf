@@ -13,11 +13,11 @@ resource "aws_lambda_function" "auth" {
       JWT_ISSUER          = "https://cognito-idp.${var.region}.amazonaws.com/${aws_cognito_user_pool.users.id}"
       JWT_TTL_MIN         = tostring(var.jwt_ttl_min)
       JWT_SECRET          = var.jwt_secret
-      DB_HOST             = "ordermanagementdb-postgres.c7s8uwq2c3v1.us-east-1.rds.amazonaws.com"
+      DB_HOST             = var.db_host
       DB_PORT             = "5432"
       DB_NAME             = "ordermanagementdb"
-      DB_USER             = "db_user"
-      DB_PASSWORD         = "db_password"
+      DB_USER             = var.db_username
+      DB_PASSWORD         = var.db_password
       CLIENT_ID           = aws_cognito_user_pool_client.app.id
       DEFAULT_PASSWORD    = "SENHABOa12345#"
     }
@@ -36,11 +36,11 @@ resource "aws_lambda_function" "register_user" {
     variables = {
       USER_POOL_ID        = aws_cognito_user_pool.users.id
       USER_POOL_CLIENT_ID = aws_cognito_user_pool_client.app.id
-      DB_HOST             = "ordermanagementdb-postgres.c7s8uwq2c3v1.us-east-1.rds.amazonaws.com"
+      DB_HOST             = var.db_host
       DB_PORT             = "5432"
       DB_NAME             = "ordermanagementdb"
-      DB_USER             = "db_user"
-      DB_PASSWORD         = "db_password"
+      DB_USER             = var.db_username
+      DB_PASSWORD         = var.db_password
       DEFAULT_PASSWORD    = "SENHABOa12345#"
     }
   }
